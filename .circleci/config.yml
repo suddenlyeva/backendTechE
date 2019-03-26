@@ -4,7 +4,11 @@
 #
 version: 2
 jobs:
-  build_test:
+  build:
+    branches:
+      only:
+        - master
+        - develop
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
@@ -13,7 +17,7 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
-
+      
     steps:
       - checkout
 
@@ -30,23 +34,10 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      
-        - run: npm test
 
-  deploy_server:
-    - deploy: 
-        name: digital-ocean 
-        command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git pull; npm install; pm2 restart index.js"
+      # run tests!
+      - run: npm test
 
-workflows:
-  version: 2
-
-  build_test_deploy:
-    jobs:
-      - build_test
-      - deploy_server:
-          requires:
-            - build-test
-          filters:
-            branches:
-              only: master
+      - deploy: 
+          name: digital-ocean 
+          command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git pull; npm install; pm2 restart index.js"
