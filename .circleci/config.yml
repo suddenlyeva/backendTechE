@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build-test:
+  build_test:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
@@ -33,10 +33,20 @@ jobs:
       
         - run: npm test
 
-  deploy:
-    branches:
-      only:
-        - master
+  deploy_server:
     - deploy: 
-      name: digital-ocean 
-      command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git pull; npm install; pm2 restart index.js"
+        name: digital-ocean 
+        command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git pull; npm install; pm2 restart index.js"
+
+workflows:
+  version: 2
+
+  build_test_deploy:
+    jobs:
+      - build_test
+      - deploy_server:
+          requires:
+            - build-test
+          filters:
+            branches:
+              only: master
