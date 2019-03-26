@@ -34,20 +34,9 @@ jobs:
         - run: npm test
 
   deploy:
+    branches:
+      only:
+        - master
     - deploy: 
       name: digital-ocean 
       command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git pull; npm install; pm2 restart index.js"
-
-workflows:
-  version: 2
-
-  build_test_deploy:
-    jobs:
-      - build-test
-
-      - deploy:
-          requires:
-            - build-test
-          filters:
-            branches:
-              only: /^master/
