@@ -54,4 +54,5 @@ workflows:
             - build_test
           filters:
             branches:
-              only: master
+              only: 
+                - master
