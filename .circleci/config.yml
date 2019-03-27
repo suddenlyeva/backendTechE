@@ -39,7 +39,9 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:7.10
     steps:
-      - deploy: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git checkout master; git pull; npm install; pm2 restart index.js"
+      - deploy: 
+          name: digital-ocean 
+          command: ssh -o "StrictHostKeyChecking no" root@68.183.161.83 "cd ~/backendTechE; git checkout master; git pull; npm install; pm2 restart index.js"
 
 
 workflows:
@@ -49,7 +51,7 @@ workflows:
       - build_test
       - deploy_production:
           requires:
-            - build_test
+              - build_test
           filters:
             branches:
               only: master
